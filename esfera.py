@@ -12,7 +12,7 @@ attribute vec2 position;
 varying vec2 v_position;
 void main() {
     v_position = position;
-    gl_Position = vec4(position.xy, 0.0, 1.0);
+    gl_Position = vec4(0.85*position.xy, 0.0, 1.0);
 }
 """
 
@@ -27,7 +27,7 @@ void main() {
 }
 """
 
-window = app.Window(width=512, height=512, color=(1, 1, 1, 1))
+window = app.Window(width=512, height=512, color=(0, 0, 0, 1))
 
 @window.event
 def on_draw(dt):
@@ -39,7 +39,8 @@ T = np.linspace(0,2*np.pi, len(P)-1, endpoint = True)
 P[1:,0], P[1:,1] = 0.95*np.cos(T), 0.95*np.sin(T)
 polygon = gloo.Program(vertex, fragment, count=len(P))
 polygon["position"] = P
-polygon["center"] = 0.10, 0.10
-polygon["color1"] = 1,1,1
+polygon["center"] = 0.0, 1.0
+polygon["color1"] = 0,0,0
 polygon["color2"] = 0.62,0.65,0.65
+# quad['texture'] = data.get('texture.png')
 app.run()
