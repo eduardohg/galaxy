@@ -5,6 +5,7 @@ from OpenGL.GLU import *
 from PIL import Image
 import numpy
 import math
+import sys
 
 def read_texture(filename):
     """
@@ -24,6 +25,35 @@ def read_texture(filename):
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,img.size[0], img.size[1], 0, GL_RGB, GL_UNSIGNED_BYTE, img_data)
     return textID
+
+print(sys.argv)
+stars = ["mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "moon", "sun"]
+star = sys.argv[1] if len(sys.argv) > 1 and sys.argv[1] in stars else 'earth'
+proportion = 1
+if star == "earth":
+    proportion = 0.091130
+    if len(sys.argv) > 2 and sys.argv[2] == "-n":
+        star = "earth_night"
+else:
+    if star == "mercury":
+        proportion = 0.034902
+    elif star == "venus":
+        proportion = 0.086567
+    elif star == "mars":
+        proportion = 0.048490
+    elif star == "jupiter":
+        proportion = 1
+    elif star == "saturn":
+        proportion = 0.832945
+    elif star == "uranus":
+        proportion = 0.362776
+    elif star == "neptune":
+        proportion = 0.352191
+    elif star == "moon":
+        proportion = 0.024846
+    elif star == "sun":
+        proportion = 9.95
+star_image = "./res/" + star + ".jpg"
 
 pygame.init()
 display = (700, 700)
@@ -47,8 +77,7 @@ pygame.mouse.set_pos(displayCenter)
 up_down_angle = 0.0
 paused = False
 run = True
-texture = read_texture('world-inverse.jpg')
-textureMoon = read_texture('jupiter.jpg')
+texture = read_texture(star_image)
 xR = 1
 while run:
     for event in pygame.event.get():
@@ -83,13 +112,13 @@ while run:
 
         # apply the movment 
         if keypress[pygame.K_w]:
-            glTranslatef(0,0,0.1)
+            glTranslatef(0,0,0.05)
         if keypress[pygame.K_s]:
-            glTranslatef(0,0,-0.1)
+            glTranslatef(0,0,-0.05)
         if keypress[pygame.K_d]:
-            glTranslatef(-0.1,0,0)
+            glTranslatef(-0.05,0,0)
         if keypress[pygame.K_a]:
-            glTranslatef(0.1,0,0)
+            glTranslatef(0.05,0,0)
         
 
         # apply the left and right rotation
@@ -113,20 +142,9 @@ while run:
         gluQuadricTexture(qobj, GL_TRUE)
         glEnable(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, texture)
-        gluSphere(qobj, 1, 50, 50)
+        gluSphere(qobj, proportion, 50, 50)
         gluDeleteQuadric(qobj)
         glDisable(GL_TEXTURE_2D)
-
-        # #Create Moon
-        # glEnable(GL_DEPTH_TEST)
-        # glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        # qMoon = gluNewQuadric()
-        # gluQuadricTexture(qMoon, GL_TRUE)
-        # glEnable(GL_TEXTURE_2D)
-        # glBindTexture(GL_TEXTURE_2D, textureMoon)
-        # gluSphere(qMoon, 1, 50, 50)
-        # gluDeleteQuadric(qMoon)
-        # glDisable(GL_TEXTURE_2D)
         glPopMatrix()
 
 
